@@ -81,6 +81,19 @@ The data processing service runs background jobs when started in `serve` mode.
 - `python src/main.py serve` starts the APScheduler-managed service.
 - The scheduler now includes a daily contributor reputation snapshot job that builds top-N contributor snapshots for each project and persists them for leaderboard / reputation queries.
 - Control the snapshot size with `REPUTATION_SNAPSHOT_TOP_N` in `.env` (default: `100`).
+- Feature drift automatically queues evaluation-gated retraining by default; set `FEATURE_DRIFT_AUTO_RETRAIN_ENABLED=false` to disable it. `FEATURE_DRIFT_RETRAIN_COOLDOWN_SECONDS` controls the per-drift cooldown (default: `86400` seconds).
+
+## API Documentation & Contracts
+
+The FastAPI server exposes an OpenAPI document (Swagger UI) at `/docs` when running.
+
+For backend contributors (e.g. NestJS), the OpenAPI schema is explicitly exported as a committed artifact to ensure contract compatibility. 
+- **Artifact Location**: `apps/data-processing/openapi.json`
+- **Generation**: To regenerate the artifact, run:
+  ```bash
+  python scripts/export_openapi.py openapi.json
+  ```
+CI will fail if the committed `openapi.json` is stale relative to the code. Contract tests in the backend assert against this artifact.
 
 ## 6. Synthetic Data Generator
 
